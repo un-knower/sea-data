@@ -5,6 +5,7 @@
 @@@ index
 
 * [intro/index](intro/index.md)
+* [design/index](design/index.md)
 * [key_tech/index](key_tech/index.md)
 * [data_model/index](data_model/index.md)
 * [tech_spec/index](tech_spec/index.md)

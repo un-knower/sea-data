@@ -25,12 +25,11 @@ object JdbcUtils extends StrictLogging {
    * @param rs    is the ResultSet holding the data
    * @param index is the column index
    * @return the value object
-   * @throws SQLException if thrown by the JDBC API
    * @see java.sql.Blob
    * @see java.sql.Clob
    * @see java.sql.Timestamp
    */
-  @throws[SQLException]
+  @throws[SQLException]("if thrown by the JDBC API")
   def getResultSetValue(rs: ResultSet, index: Int): AnyRef = {
     val obj = rs.getObject(index)
     val className: String = if (obj == null) null else obj.getClass.getName

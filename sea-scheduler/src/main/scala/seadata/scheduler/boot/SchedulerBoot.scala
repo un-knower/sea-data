@@ -1,9 +1,9 @@
-package seadata.engine.boot
+package seadata.scheduler.boot
 
 import com.typesafe.config.ConfigFactory
 import seadata.inject.SeaServer
 
-object EngineBoot {
+object SchedulerBoot {
 
   def main(args: Array[String]): Unit = {
     SeaServer.start(ConfigFactory.load())

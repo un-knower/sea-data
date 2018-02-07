@@ -132,9 +132,8 @@ trait JdbcOperations {
    * @param useTransaction 是否使用事物
    * @tparam R 返回值类型
    * @return 成功执行SQL语句，并返回 actionFunc 执行后的结果。失败将抛出异常
-   * @throws SQLException 数据库操作错误
    */
-  @throws[SQLException]
+  @throws[SQLException]("数据库操作错误")
   def execute[R](
       externalConn: Connection,
       pscFunc: ConnectionPreparedStatementCreator,

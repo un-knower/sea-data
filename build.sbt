@@ -51,7 +51,7 @@ lazy val seaFunctest = _project("sea-functest")
     jvmOptions in MultiJvm := Seq("-Xmx256M"),
     libraryDependencies ++= Seq(
       _akkaMultiNodeTestkit
-    ) ++ _kamons
+    ) //++ _kamons
   )
 
 // 监查、控制、管理
@@ -140,6 +140,8 @@ lazy val seaData = _project("sea-data")
     seaIPC % "compile->compile;test->test",
     seaCore % "compile->compile;test->test")
   .settings(
+    test in assembly := {},
+//    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
     libraryDependencies ++= Seq(
       _akkaStreamKafka,
       _postgresql
@@ -149,7 +151,7 @@ lazy val seaData = _project("sea-data")
 // 管理程序公共库
 lazy val seaCoreServer = _project("sea-core-server")
   .settings(Publishing.publishing: _*)
-  .dependsOn(seaCore % "compile->compile;test->test")
+  .dependsOn(seaIPC, seaCore % "compile->compile;test->test")
   .settings(
     libraryDependencies ++= Seq(
       _guice

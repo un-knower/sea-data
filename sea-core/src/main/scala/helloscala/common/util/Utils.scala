@@ -11,6 +11,8 @@ import java.time.{LocalDate, LocalDateTime}
 import java.util.Properties
 import java.util.concurrent.ThreadLocalRandom
 
+import com.typesafe.config.{Config, ConfigFactory}
+
 import scala.compat.java8.FunctionConverters._
 import scala.util.Try
 import scala.util.matching.Regex
@@ -157,4 +159,9 @@ object Utils {
       .toMap
   }
 
+  def getClusterName(config: Config): String = option(System.getProperty("sea.cluster.name"))
+    .orElse(Try(config.getString("sea.cluster.name")).toOption)
+    .getOrElse("sea")
+
+  def getClusterName(): String = getClusterName(ConfigFactory.load())
 }
