@@ -1,85 +1,73 @@
 package seadata.functest
 
 import akka.actor.ActorSystem
+import akka.remote.testconductor.RoleName
 import akka.remote.testkit.{MultiNodeConfig, MultiNodeSpec}
 import akka.testkit.ImplicitSender
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
-import seadata.engine.server.EngineServer
-import seadata.inject.SeaServer
+import seadata.console.ConsoleBoot
+import seadata.broker.boot.BrokerBoot
+import seadata.core.Constants
 
 object NodesTestMultiNodeConfig extends MultiNodeConfig {
-  val nodeScheduler1 = role("scheduler1")
-  val nodeEngine1 = role("engine1")
-  val nodeConsole1 = role("console1")
-  val nodeChoreography1 = role("choreography1")
+  val nodeBrokerList = (1 to 5).map(i => role(s"${Constants.Roles.BROKER}$i"))
+
+  val nodeConsoleList = (1 to 1).map(i => role(s"${Constants.Roles.CONSOLE}$i"))
+
+
+  def nodeList: Seq[RoleName] = nodeBrokerList ++ nodeConsoleList
 
   nodeList.foreach { role =>
-    nodeConfig(role) {
-      ConfigFactory.parseString(
-//        akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
-//      akka.cluster.metrics.native-library-extract-folder=target/native/${role.name}
-
-      s"""|akka.remote.artery.enabled = off
-            |akka.cluster.seed-nodes = []
-            """.stripMargin)
-    }
-  }
-
-  nodeSchedulerList.zipWithIndex.foreach { case (role, idx) =>
-    val port = 30011 + idx
+    val userDir = System.getProperty("user.dir")
     nodeConfig(role)(
-      ConfigFactory
-        .parseString(
-          s"""|akka.remote.netty.tcp.port = $port
-              |akka.remote.artery.canonical.port = $port""".stripMargin)
-        .withFallback(ConfigFactory.load("sea-scheduler"))
+      ConfigFactory.parseString(
+        //      akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
+        s"""|akka.cluster.metrics.native-library-extract-folder=target/native/${role.name}
+            |akka.remote.artery.enabled = off
+            |seadata.cluster.seeds = ["127.0.0.1:30011"]""".stripMargin)
     )
   }
 
-  nodeEngineList.zipWithIndex.foreach { case (role, idx) =>
-    val port = 30021 + idx
+  nodeBrokerList.zipWithIndex.foreach { case (role, idx) =>
+    val httpPort = 30010 + (idx * 10)
+    val port = 30011 + (idx * 10)
     nodeConfig(role)(
-      ConfigFactory
-        .parseString(
-          s"""|akka.remote.netty.tcp.port = $port
-              |akka.remote.artery.canonical.port = $port""".stripMargin)
-        .withFallback(ConfigFactory.load("sea-engine"))
+      ConfigFactory.parseString(
+        //      akka.cluster.roles = [${Constants.Roles.ENGINE}]
+        s"""|akka.remote.netty.tcp.port = $port
+            |akka.remote.artery.canonical.port = $port
+            |http.server.port = $httpPort""".stripMargin)
+        .withFallback(ConfigFactory.load("sea-broker"))
     )
   }
 
   nodeConsoleList.zipWithIndex.foreach { case (role, idx) =>
-    val port = 30031 + idx
+    val httpPort = 30000 + (idx * 10)
+    val port = 30001 + (idx * 10)
     nodeConfig(role)(
       ConfigFactory
         .parseString(
           s"""|akka.remote.netty.tcp.port = $port
-              |akka.remote.artery.canonical.port = $port""".stripMargin)
+              |akka.remote.artery.canonical.port = $port
+              |http.server.port = $httpPort""".stripMargin)
         .withFallback(ConfigFactory.load("sea-console"))
     )
   }
 
-  nodeChoreographyList.zipWithIndex.foreach { case (role, idx) =>
-    val port = 30041 + idx
-    nodeConfig(role)(
-      ConfigFactory
-        .parseString(
-          s"""|akka.remote.netty.tcp.port = $port
-              |akka.remote.artery.canonical.port = $port""".stripMargin)
-        .withFallback(ConfigFactory.load("sea-choreography"))
-    )
-  }
-
-  def nodeList = nodeSchedulerList ++ nodeEngineList ++ nodeConsoleList ++ nodeChoreographyList
-
-  def nodeSchedulerList = Seq(nodeScheduler1)
-
-  def nodeEngineList = Seq(nodeEngine1)
-
-  def nodeConsoleList = Seq(nodeConsole1)
-
-  def nodeChoreographyList = Seq(nodeChoreography1)
 }
+
+class NodesTestMultiJvmNode1 extends NodesTest
+
+class NodesTestMultiJvmNode2 extends NodesTest
+
+class NodesTestMultiJvmNode3 extends NodesTest
+
+class NodesTestMultiJvmNode4 extends NodesTest
+
+class NodesTestMultiJvmNode5 extends NodesTest
+
+class NodesTestMultiJvmNode6 extends NodesTest
 
 abstract class NodesTest
   extends MultiNodeSpec(NodesTestMultiNodeConfig, config => ActorSystem("sea", config))
@@ -96,38 +84,29 @@ abstract class NodesTest
 
   "Sea NodesTest" should {
     "启动服务" in {
-      runOn(nodeScheduler1) {
-        SeaServer.start(system, node(nodeScheduler1).address)
+      runOn(nodeBrokerList.head) {
+        BrokerBoot(system).start()
         enterBarrier("startup")
       }
-      runOn(nodeEngine1) {
-        enterBarrier("startup")
-        SeaServer.start(system, node(nodeScheduler1).address)
-        new EngineServer(system).start()
+      for (role <- nodeBrokerList.tail) {
+        runOn(role) {
+          enterBarrier("startup")
+          BrokerBoot(system).start()
+        }
       }
-      runOn(nodeConsole1) {
-        enterBarrier("startup")
-        SeaServer.start(system, node(nodeScheduler1).address)
-      }
-      runOn(nodeChoreography1) {
-        enterBarrier("startup")
-        SeaServer.start(system, node(nodeScheduler1).address)
+      for (role <- nodeConsoleList) {
+        runOn(role) {
+          enterBarrier("startup")
+          ConsoleBoot(system).start()
+        }
       }
     }
 
     "查询状态" in {
       println(s"$myself " + node(myself).address)
+      java.util.concurrent.TimeUnit.SECONDS.sleep(1)
       enterBarrier("finished")
-      java.util.concurrent.TimeUnit.SECONDS.sleep(2)
     }
   }
 
 }
-
-class NodesTestMultiJvmNode1 extends NodesTest
-
-class NodesTestMultiJvmNode2 extends NodesTest
-
-class NodesTestMultiJvmNode3 extends NodesTest
-
-class NodesTestMultiJvmNode4 extends NodesTest

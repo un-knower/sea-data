@@ -8,23 +8,20 @@ lazy val root = Project(id = "sea-data-root", base = file("."))
     seaDocs,
     seaFunctest,
     seaConsole,
-    seaIPCConsole,
-    seaScheduler,
-    seaEngine,
+    seaBroker,
     seaData,
-    seaCoreServer,
-    seaIPC,
-    seaCore
+    seaCoreExt,
+    seaCore,
+    seaCommon
   )
   .settings(Publishing.noPublish: _*)
   .settings(Environment.settings: _*)
 
 lazy val seaDocs = _project("sea-docs")
-  .enablePlugins(AkkaParadoxPlugin)
+  .enablePlugins(ParadoxPlugin)
   .dependsOn(
-    seaFunctest, seaConsole, seaScheduler, seaChoreography, seaEngine, seaIPCConsole,
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
+    seaFunctest, seaConsole, seaBroker,
+    seaCoreExt % "compile->compile;test->test",
     seaCore % "compile->compile;test->test"
   )
   .settings(
@@ -36,19 +33,18 @@ lazy val seaDocs = _project("sea-docs")
       "scala.binary_version" -> scalaBinaryVersion.value,
       "scaladoc.akka.base_url" -> s"http://doc.akka.io/api/$versionAkka",
       "akka.version" -> versionAkka
-    )
-  )
+    ))
+      .settings(Publishing.noPublish: _*)
 
 lazy val seaFunctest = _project("sea-functest")
-  .dependsOn(seaConsole, seaScheduler, seaChoreography, seaEngine, seaIPCConsole,
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
+  .dependsOn(seaConsole, seaBroker,
+    seaCoreExt % "compile->compile;test->test",
     seaCore % "compile->compile;test->test")
   .enablePlugins(MultiJvmPlugin)
   .configs(MultiJvm)
   .settings(Publishing.noPublish: _*)
   .settings(
-    jvmOptions in MultiJvm := Seq("-Xmx256M"),
+    jvmOptions in MultiJvm := Seq("-Xmx1024M"),
     libraryDependencies ++= Seq(
       _akkaMultiNodeTestkit
     ) //++ _kamons
@@ -57,78 +53,32 @@ lazy val seaFunctest = _project("sea-functest")
 // 监查、控制、管理
 lazy val seaConsole = _project("sea-console")
   .dependsOn(
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
+    seaCoreExt % "compile->compile;test->test",
     seaCore % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
   .settings(Packaging.settings: _*)
   .settings(Publishing.noPublish: _*)
   .settings(
-    mainClass in Compile := Some("seadata.console.boot.ConsoleBoot"),
+    mainClass in Compile := Some("seadata.console.Main"),
     libraryDependencies ++= Seq(
 
-    )
-  )
-
-lazy val seaChoreography = _project("sea-choreography")
-  .dependsOn(
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
-    seaCore % "compile->compile;test->test")
-  .enablePlugins(JavaAppPackaging)
-  .settings(Packaging.settings: _*)
-  .settings(Publishing.noPublish: _*)
-  .settings(
-    mainClass in Compile := Some("seadata.choreography.boot.ChoreographyBoot"),
-    libraryDependencies ++= Seq(
-
-    )
-  )
-
-// 进程间通信、服务发现、消息路由 管理控制台程序
-lazy val seaIPCConsole = _project("sea-ipc-console")
-  .dependsOn(
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
-    seaCore % "compile->compile;test->test")
-  .enablePlugins(JavaAppPackaging)
-  .settings(Packaging.settings: _*)
-  .settings(Publishing.noPublish: _*)
-  .settings(
-    mainClass in Compile := Some("seadata.ipc.console.boot.IPCConsoleBoot"),
-    libraryDependencies ++= Seq(
-
-    )
-  )
-
-// 调度
-lazy val seaScheduler = _project("sea-scheduler")
-  .enablePlugins(JavaAppPackaging)
-  .dependsOn(
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
-    seaCore % "compile->compile;test->test")
-  .settings(Publishing.noPublish: _*)
-  .settings(
-    mainClass in Compile := Some("seadata.scheduler.boot.SchedulerBoot"),
-    libraryDependencies ++= Seq(
-      _quartz
     )
   )
 
 // 执行引擎
-lazy val seaEngine = _project("sea-engine")
+lazy val seaBroker = _project("sea-broker")
   .dependsOn(
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
+    seaCoreExt % "compile->compile;test->test",
     seaCore % "compile->compile;test->test")
   .enablePlugins(JavaAppPackaging)
   .settings(Packaging.settings: _*)
   .settings(Publishing.noPublish: _*)
   .settings(
-    mainClass in Compile := Some("seadata.engine.boot.EngineBoot"),
+    mainClass in Compile := Some("seadata.broker.Main"),
     libraryDependencies ++= Seq(
-
+      _quartz,
+      _alpakkaFile,
+      _alpakkaFtp
     )
   )
 
@@ -136,40 +86,38 @@ lazy val seaEngine = _project("sea-engine")
 lazy val seaData = _project("sea-data")
   .settings(Publishing.noPublish: _*)
   .dependsOn(
-    seaCoreServer % "compile->compile;test->test",
-    seaIPC % "compile->compile;test->test",
     seaCore % "compile->compile;test->test")
   .settings(
     test in assembly := {},
-//    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
+    //    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
     libraryDependencies ++= Seq(
       _akkaStreamKafka,
+      _mysql,
       _postgresql
     ) ++ _alpakkas
   )
 
 // 管理程序公共库
-lazy val seaCoreServer = _project("sea-core-server")
+lazy val seaCoreExt = _project("sea-core-ext")
   .settings(Publishing.publishing: _*)
-  .dependsOn(seaIPC, seaCore % "compile->compile;test->test")
+  .dependsOn(seaCore % "compile->compile;test->test")
   .settings(
     libraryDependencies ++= Seq(
-      _guice
-    ) ++ _akkaHttps
-  )
-
-// 进程间通信、服务发现、消息路由 公共库
-lazy val seaIPC = _project("sea-ipc")
-  .dependsOn(
-    seaCore % "compile->compile;test->test")
-  .settings(Publishing.publishing: _*)
-  .settings(
-    libraryDependencies ++= Seq(
-      _protobuf
-    ) ++ _akkaClusters
+      _sigarLoader
+    ) ++ _akkaClusters ++ _akkaHttps //++ _kamons
   )
 
 lazy val seaCore = _project("sea-core")
+  .dependsOn(seaCommon % "compile->compile;test->test")
+  .settings(Publishing.publishing: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      _protobuf,
+      _akkaHttpCore % Provided
+    )
+  )
+
+lazy val seaCommon = _project("sea-common")
   .settings(Publishing.publishing: _*)
   .settings(
     libraryDependencies ++= Seq(
@@ -181,6 +129,9 @@ lazy val seaCore = _project("sea-core")
       _scalaXml,
       "org.scala-lang" % "scala-library" % scalaVersion.value,
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      _scalaJava8Compat,
+      _mysql % Test,
+      _postgresql % Test,
       _scalatest % Test
     ) ++ _jacksons ++ _akkas
   )

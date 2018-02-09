@@ -409,6 +409,5 @@ _book/
 
 .~lock.*
 
-/recommamd-system.iml
 /spark-warehouse/
-/rs-algorithm/spark-warehouse/
+native/

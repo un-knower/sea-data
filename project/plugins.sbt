@@ -3,6 +3,8 @@ logLevel := Level.Warn
 
 resolvers += Resolver.sbtPluginRepo("releases")
 
+addSbtPlugin("de.heikoseeberger" % "sbt-header" % "4.1.0")
+
 addSbtPlugin("com.typesafe.sbt" % "sbt-multi-jvm" % "0.4.0")
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.6")

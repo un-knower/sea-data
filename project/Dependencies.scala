@@ -6,19 +6,25 @@ object Dependencies {
 
   val _scalaXml = ("org.scala-lang.modules" %% "scala-xml" % "1.0.6").exclude("org.scala-lang", "scala-library")
 
-  val _scalatest = "org.scalatest" %% "scalatest" % "3.0.4"
+  val _scalaJava8Compat = ("org.scala-lang.modules" %% "scala-java8-compat" % "0.8.0").exclude("org.scala-lang", "scala-library")
 
-  val versionAkka = "2.5.9"
+  val _scalatest = "org.scalatest" %% "scalatest" % "3.0.5"
+
+  val versionAkka = "2.5.10"
+  lazy val _akkaRemote = "com.typesafe.akka" %% "akka-remote" % versionAkka
+
   lazy val _akkas = Seq(
     "com.typesafe.akka" %% "akka-slf4j" % versionAkka,
     "com.typesafe.akka" %% "akka-stream" % versionAkka,
-    "com.typesafe.akka" %% "akka-remote" % versionAkka,
     "com.typesafe.akka" %% "akka-testkit" % versionAkka % Test,
     "com.typesafe.akka" %% "akka-stream-testkit" % versionAkka % Test
-  ).map(_.exclude("org.scala-lang.modules", s"scala-java8-compat").cross(CrossVersion.binary)) :+
-    ("org.scala-lang.modules" %% "scala-java8-compat" % "0.8.0").exclude("org.scala-lang", "scala-library")
+  ).map(_.exclude("org.scala-lang.modules", s"scala-java8-compat").cross(CrossVersion.binary))
+
+  lazy val _akkaPersistence = "com.typesafe.akka" %% "akka-persistence-query" % versionAkka
 
   lazy val _akkaMultiNodeTestkit = "com.typesafe.akka" %% "akka-multi-node-testkit" % versionAkka % Test
+
+  lazy val _akkaClusterSharding = "com.typesafe.akka" %% "akka-cluster-sharding" % versionAkka
 
   lazy val _akkaClusters = Seq(
     "com.typesafe.akka" %% "akka-cluster" % versionAkka,
@@ -30,6 +36,8 @@ object Dependencies {
   lazy val _akkaManagement = "com.lightbend.akka.management" %% "akka-management" % "0.10.0"
 
   val versionAkkaHttp = "10.0.11"
+  val _akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % versionAkkaHttp
+
   val _akkaHttps = Seq(
     "com.typesafe.akka" %% "akka-http" % versionAkkaHttp,
     "com.typesafe.akka" %% "akka-http-testkit" % versionAkkaHttp % Test
@@ -37,9 +45,15 @@ object Dependencies {
     .exclude("com.typesafe.akka", "akka-stream").withCrossVersion(CrossVersion.binary)
     .exclude("com.typesafe.akka", "akka-stream-testkit").withCrossVersion(CrossVersion.binary))
 
-  private val versionAlpakka = "0.16"
-  val _alpakkaCassandra = ("com.lightbend.akka" %% "akka-stream-alpakka-cassandra" % versionAlpakka)
-    .excludeAll(ExclusionRule("com.typesafe.akka"), ExclusionRule("com.datastax.cassandra"), ExclusionRule("io.netty"), ExclusionRule("com.google.guava"))
+  private val versionAlpakka = "0.17"
+  val _alpakkaSimpleCodecs = ("com.lightbend.akka" %% "akka-stream-alpakka-simple-codecs" % versionAlpakka)
+    .excludeAll(ExclusionRule("com.typesafe.akka"))
+
+  val _alpakkaXml = ("com.lightbend.akka" %% "akka-stream-alpakka-xml" % versionAlpakka)
+    .excludeAll(ExclusionRule("com.typesafe.akka"))
+
+  val _alpakkaCsv = ("com.lightbend.akka" %% "akka-stream-alpakka-csv" % versionAlpakka)
+    .excludeAll(ExclusionRule("com.typesafe.akka"))
 
   val _alpakkaFile = ("com.lightbend.akka" %% "akka-stream-alpakka-file" % versionAlpakka)
     .excludeAll(ExclusionRule("com.typesafe.akka"))
@@ -47,20 +61,31 @@ object Dependencies {
   val _alpakkaFtp = ("com.lightbend.akka" %% "akka-stream-alpakka-ftp" % versionAlpakka)
     .excludeAll(ExclusionRule("com.typesafe.akka"))
 
+  val _alpakkaUnixDomainSocket = ("com.lightbend.akka" %% "akka-stream-alpakka-unix-domain-socket" % versionAlpakka)
+    .excludeAll(ExclusionRule("com.typesafe.akka"))
+
   val _alpakkaMongodb = ("com.lightbend.akka" %% "akka-stream-alpakka-mongodb" % versionAlpakka)
     .excludeAll(ExclusionRule("com.typesafe.akka"))
+
+  val _alpakkaCassandra = ("com.lightbend.akka" %% "akka-stream-alpakka-cassandra" % versionAlpakka)
+    .excludeAll(ExclusionRule("com.typesafe.akka"), ExclusionRule("com.datastax.cassandra"), ExclusionRule("io.netty"), ExclusionRule("com.google.guava"))
 
   val _alpakkaElasticsearch = ("com.lightbend.akka" %% "akka-stream-alpakka-elasticsearch" % versionAlpakka)
     .excludeAll(ExclusionRule("com.typesafe.akka"))
 
   val _alpakkas = Seq(
+    _alpakkaXml,
+    _alpakkaCsv,
+    _alpakkaSimpleCodecs,
+    _alpakkaUnixDomainSocket,
     _alpakkaFile,
     _alpakkaFtp
   )
 
-  val _akkaPersistenceCassandra = Seq(
-    "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.80",
-    "com.typesafe.akka" %% "akka-persistence-cassandra-launcher" % "0.80" % Test
+  private val versionAkkaPersistenceCassandra = "0.82"
+  val _akkaPersistenceCassandras = Seq(
+    "com.typesafe.akka" %% "akka-persistence-cassandra" % versionAkkaPersistenceCassandra,
+    "com.typesafe.akka" %% "akka-persistence-cassandra-launcher" % versionAkkaPersistenceCassandra % Test
   )
 
   val _akkaStreamKafka = ("com.typesafe.akka" %% "akka-stream-kafka" % "0.19")
@@ -79,6 +104,8 @@ object Dependencies {
   )
 
   val _aspectjweaver = "org.aspectj" % "aspectjweaver" % "1.8.13"
+
+  val _sigarLoader = "io.kamon" % "sigar-loader" % "1.6.6-rev002"
 
   private val versionKamon = "1.0.1"
   val _kamonAkka = ("io.kamon" %% "kamon-akka-2.5" % versionKamon)
@@ -115,7 +142,7 @@ object Dependencies {
   val _guice = "com.google.inject" % "guice" % "4.1.0"
 
   private val versionCassandra = "3.3.2"
-  val _cassandraDriver = Seq(
+  val _cassandraDrivers = Seq(
     "com.datastax.cassandra" % "cassandra-driver-core" % versionCassandra,
     "com.datastax.cassandra" % "cassandra-driver-extras" % versionCassandra
   ).map(_.excludeAll(ExclusionRule("io.netty")))
@@ -125,11 +152,11 @@ object Dependencies {
   private val versionQuartz = "2.2.3"
   val _quartz = "org.quartz-scheduler" % "quartz" % versionQuartz
 
-  val _postgresql = "org.postgresql" % "postgresql" % "42.1.4"
+  val _postgresql = "org.postgresql" % "postgresql" % "42.2.1"
 
   val _mysql = "mysql" % "mysql-connector-java" % "6.0.6"
 
-  val _hikariCP = "com.zaxxer" % "HikariCP" % "2.7.6"
+  val _hikariCP = "com.zaxxer" % "HikariCP" % "2.7.7"
 
   val _commonsLang3 = "org.apache.commons" % "commons-lang3" % "3.7"
 
@@ -137,7 +164,7 @@ object Dependencies {
 
   val _protobuf = "com.google.protobuf" % "protobuf-java" % "3.5.1"
 
-  private val swaggerVersion = "1.5.17"
+  private val swaggerVersion = "1.5.18"
   val _swaggerAnnotation = "io.swagger" % "swagger-annotations" % swaggerVersion
 }
 

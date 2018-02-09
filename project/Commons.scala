@@ -1,5 +1,7 @@
 import sbt.Keys._
 import sbt._
+import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerLicense
+import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.HeaderLicense
 
 object Commons {
 
@@ -7,11 +9,16 @@ object Commons {
   import sbtassembly.{MergeStrategy, PathList}
 
   def basicSettings = Version.versionning ++ Seq(
-    organization := "com.helloscala",
-    organizationName := "helloscala.com",
-    organizationHomepage := Some(url("https://helloscala.com")),
-    homepage := Some(url("http://seadata.helloscala.com")),
+    organization := "me.yangbajing",
+    organizationName := "Yangbajing's Garden",
+    organizationHomepage := Some(url("https://yangbajing.me")),
+    homepage := Some(url("http://www.yangbajing.me/sea-data/doc/")),
     startYear := Some(2018),
+    licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt")),
+    headerLicense := Some(HeaderLicense.Custom(
+      """Copyright (c) Yangbajing 2018
+        |
+        |This is the custom License of Yangbajing""".stripMargin)),
     scalaVersion := Dependencies.versionScala,
     scalacOptions ++= Seq(
       "-encoding", "UTF-8", // yes, this is 2 args
@@ -42,12 +49,12 @@ object Commons {
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
     },
-//      resolvers ++= Seq(
-//      "elasticsearch-releases" at "https://artifacts.elastic.co/maven"
-//  )
+    //      resolvers ++= Seq(
+    //      "elasticsearch-releases" at "https://artifacts.elastic.co/maven"
+    //  )
     fork in run := true,
     fork in Test := true,
-    parallelExecution in Test := false,
+    parallelExecution in Test := false
   ) ++ Environment.settings // ++ Formatting.settings
 
 }
@@ -102,6 +109,7 @@ object Environment {
     }
   )
 }
+
 object Packaging {
   // Good example https://github.com/typesafehub/activator/blob/master/project/Packaging.scala
   import com.typesafe.sbt.SbtNativePackager._

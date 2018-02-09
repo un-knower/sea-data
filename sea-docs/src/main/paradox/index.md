@@ -6,17 +6,10 @@
 
 * [intro/index](intro/index.md)
 * [design/index](design/index.md)
-* [key_tech/index](key_tech/index.md)
-* [data_model/index](data_model/index.md)
-* [tech_spec/index](tech_spec/index.md)
-* [data/index](data/index.md)
-* [engine/index](engine/index.md)
-* [scheduler/index](scheduler/index.md)
-* [choreography/index](choreography/index.md)
+<!-- * [data_model/index](data_model/index.md) -->
+* [broker/index](broker/index.md)
 * [console/index](console/index.md)
-* [business_spec/index](business_spec/index.md)
-* [component_spec/index](component_spec/index.md)
-* [ic_spec/index](ic_spec/index.md)
+* [spec/index](spec/index.md)
 
 @@@
 
