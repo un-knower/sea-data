@@ -71,13 +71,13 @@ object JdbcUtils extends StrictLogging {
   }
 
   /**
-   * 将所有 :name 命名参数替换成?
+   * 将所有 ?name 命名参数替换成 ?
    * @param sql 采用命名参数编写的SQL语句
    * @return (转换后SQL语句，提取出的参数和索引)，索引从1开始编号
    */
   def namedParameterToQuestionMarked(sql: String): (String, Map[String, Int]) = {
-    val sqlBuf = mutable.Buffer.empty[Char]
-    val paramBuf = mutable.Buffer.empty[Char]
+    val sqlBuf = new java.lang.StringBuilder()
+    var paramBuf = new java.lang.StringBuilder()
     val params = mutable.Map.empty[String, Int]
     var idx = 0
     var isName = false
@@ -88,15 +88,15 @@ object JdbcUtils extends StrictLogging {
       case c @ (',' | ')') if isName =>
         sqlBuf.append(c)
         idx += 1
-        params += (paramBuf.mkString.trim -> idx)
-        paramBuf.clear()
+        params += (paramBuf.toString.trim -> idx)
+        paramBuf = new java.lang.StringBuilder()
         isName = false
       case c if isName =>
         paramBuf.append(c)
       case c =>
         sqlBuf.append(c)
     }
-    (sqlBuf.mkString, params.toMap)
+    (sqlBuf.toString, params.toMap)
   }
 
   def preparedStatementCreator(sql: String, namedSql: String = ""): ConnectionPreparedStatementCreator =

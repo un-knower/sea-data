@@ -113,8 +113,9 @@ lazy val seaCore = _project("sea-core")
   .settings(
     libraryDependencies ++= Seq(
       _protobuf,
+      _shapeless,
       _akkaHttpCore % Provided
-    )
+    ) ++ _catses
   )
 
 lazy val seaCommon = _project("sea-common")

@@ -4,13 +4,13 @@ object Dependencies {
   val versionScala = "2.12.4"
   val versionScalaLib = "2.12"
 
-  val _scalaXml = ("org.scala-lang.modules" %% "scala-xml" % "1.0.6").exclude("org.scala-lang", "scala-library")
+  val _scalaXml = ("org.scala-lang.modules" %% "scala-xml" % "1.1.0").exclude("org.scala-lang", "scala-library")
 
   val _scalaJava8Compat = ("org.scala-lang.modules" %% "scala-java8-compat" % "0.8.0").exclude("org.scala-lang", "scala-library")
 
   val _scalatest = "org.scalatest" %% "scalatest" % "3.0.5"
 
-  val versionAkka = "2.5.10"
+  val versionAkka = "2.5.11"
   lazy val _akkaRemote = "com.typesafe.akka" %% "akka-remote" % versionAkka
 
   lazy val _akkas = Seq(
@@ -24,18 +24,17 @@ object Dependencies {
 
   lazy val _akkaMultiNodeTestkit = "com.typesafe.akka" %% "akka-multi-node-testkit" % versionAkka % Test
 
-  lazy val _akkaClusterSharding = "com.typesafe.akka" %% "akka-cluster-sharding" % versionAkka
-
   lazy val _akkaClusters = Seq(
     "com.typesafe.akka" %% "akka-cluster" % versionAkka,
     "com.typesafe.akka" %% "akka-cluster-tools" % versionAkka,
     "com.typesafe.akka" %% "akka-cluster-metrics" % versionAkka,
+    "com.typesafe.akka" %% "akka-cluster-sharding" % versionAkka,
     _akkaMultiNodeTestkit
   )
 
   lazy val _akkaManagement = "com.lightbend.akka.management" %% "akka-management" % "0.10.0"
 
-  val versionAkkaHttp = "10.0.11"
+  val versionAkkaHttp = "10.1.0"
   val _akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % versionAkkaHttp
 
   val _akkaHttps = Seq(
@@ -91,11 +90,11 @@ object Dependencies {
   val _akkaStreamKafka = ("com.typesafe.akka" %% "akka-stream-kafka" % "0.19")
     .exclude("com.typesafe.akka", "akka-slf4j").cross(CrossVersion.binary)
 
-  val _config = "com.typesafe" % "config" % "1.3.2"
+  val _config = "com.typesafe" % "config" % "1.3.3"
 
   val _hanlp = "com.hankcs" % "hanlp" % "portable-1.5.3"
 
-  private val versionJackson = "2.9.2"
+  private val versionJackson = "2.9.4"
   val _jacksons = Seq(
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % versionJackson,
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % versionJackson,
@@ -135,11 +134,15 @@ object Dependencies {
     _aspectjweaver // kamon-akka-remote 需要
   )
 
-  val shapeless = "com.chuusai" %% "shapeless" % "2.3.3"
+  private val versioCats = "1.0.1"
+  val _catses = Seq(
+    "org.typelevel" %% "cats-macros" %versioCats,
+    "org.typelevel" %% "cats-free" %versioCats
+  )
 
-  val _scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
+  val _shapeless = "com.chuusai" %% "shapeless" % "2.3.3"
 
-  val _guice = "com.google.inject" % "guice" % "4.1.0"
+  val _scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.8.0"
 
   private val versionCassandra = "3.3.2"
   val _cassandraDrivers = Seq(
@@ -156,11 +159,7 @@ object Dependencies {
 
   val _mysql = "mysql" % "mysql-connector-java" % "6.0.6"
 
-  val _hikariCP = "com.zaxxer" % "HikariCP" % "2.7.7"
-
-  val _commonsLang3 = "org.apache.commons" % "commons-lang3" % "3.7"
-
-  val _commonsBeanutils = "commons-beanutils" % "commons-beanutils" % "1.9.3"
+  val _hikariCP = "com.zaxxer" % "HikariCP" % "2.7.8"
 
   val _protobuf = "com.google.protobuf" % "protobuf-java" % "3.5.1"
 
