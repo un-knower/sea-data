@@ -4,14 +4,14 @@
  * This is the custom License of Yangbajing
  */
 
-package seadata.console
+package seadata.console.boot
 
 import seadata.core.server.SeaBoot
 
 object Main {
 
   def main(args: Array[String]): Unit = {
-    ConsoleBoot(SeaBoot.actorSystem).start()
+    new ConsoleBoot(SeaBoot.actorSystem).start()
   }
 
 }

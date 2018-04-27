@@ -32,6 +32,8 @@ google-chrome sea-docs/target/paradox/site/main/index.html
 - [sea-core](sea-core)：Sea 核心库
 - [sea-common](sea-common)：一些工具类、库
 
+orchestration 编排
+
 ## 开发
 
 **开始、运行 multi-jvm 测试：NodesTest**

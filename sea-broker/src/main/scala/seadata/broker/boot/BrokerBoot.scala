@@ -11,22 +11,22 @@ import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerS
 import seadata.core.Constants
 import seadata.core.server.{BaseBoot, SeaBoot}
 import seadata.broker.BrokerNode
-import seadata.broker.coordinator.BrokerLeader
+import seadata.broker.leader.BrokerLeader
 
-object BrokerBoot {
-  private var _boot: BrokerBoot = _
+//object BrokerBoot {
+//  private var _boot: BrokerBoot = _
+//
+//  def boot: BrokerBoot = {
+//    assert(_boot ne null)
+//    _boot
+//  }
+//
+//  def apply(system: ActorSystem) = new BrokerBoot(system)
+//
+//}
 
-  def boot: BrokerBoot = {
-    assert(_boot ne null)
-    _boot
-  }
-
-  def apply(system: ActorSystem) = new BrokerBoot(system)
-
-}
-
-case class BrokerBoot private (
-    system: ActorSystem,
+final class BrokerBoot(
+    val system: ActorSystem,
     initBrokerLeaderProxy: Boolean = true
 ) extends BaseBoot {
 
@@ -50,14 +50,6 @@ case class BrokerBoot private (
 
     _brokerNode = system.actorOf(BrokerNode.props, Constants.Nodes.BROKER)
 
-    setupBoot()
-  }
-
-  private def setupBoot(): BrokerBoot = {
-    if (BrokerBoot._boot ne null) {
-      throw new ExceptionInInitializerError(getClass.getSimpleName + " 已实例化")
-    }
-    BrokerBoot._boot = this
     this
   }
 

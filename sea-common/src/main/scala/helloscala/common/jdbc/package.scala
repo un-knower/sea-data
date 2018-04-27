@@ -6,8 +6,6 @@
 
 package helloscala.common
 
-import scala.collection.immutable
-
 package object jdbc {
   //  type JdbcSinkResult = immutable.Seq[immutable.Seq[Int]]
 }

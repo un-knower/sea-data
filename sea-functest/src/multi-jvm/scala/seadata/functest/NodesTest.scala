@@ -6,8 +6,8 @@ import akka.remote.testkit.{MultiNodeConfig, MultiNodeSpec}
 import akka.testkit.ImplicitSender
 import com.typesafe.config.ConfigFactory
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
-import seadata.console.ConsoleBoot
 import seadata.broker.boot.BrokerBoot
+import seadata.console.boot.ConsoleBoot
 import seadata.core.Constants
 
 object NodesTestMultiNodeConfig extends MultiNodeConfig {
@@ -57,18 +57,6 @@ object NodesTestMultiNodeConfig extends MultiNodeConfig {
 
 }
 
-class NodesTestMultiJvmNode1 extends NodesTest
-
-class NodesTestMultiJvmNode2 extends NodesTest
-
-class NodesTestMultiJvmNode3 extends NodesTest
-
-class NodesTestMultiJvmNode4 extends NodesTest
-
-class NodesTestMultiJvmNode5 extends NodesTest
-
-class NodesTestMultiJvmNode6 extends NodesTest
-
 abstract class NodesTest
   extends MultiNodeSpec(NodesTestMultiNodeConfig, config => ActorSystem("sea", config))
     with WordSpecLike with Matchers with BeforeAndAfterAll
@@ -85,19 +73,19 @@ abstract class NodesTest
   "Sea NodesTest" should {
     "启动服务" in {
       runOn(nodeBrokerList.head) {
-        BrokerBoot(system).start()
+        new BrokerBoot(system).start()
         enterBarrier("startup")
       }
       for (role <- nodeBrokerList.tail) {
         runOn(role) {
           enterBarrier("startup")
-          BrokerBoot(system).start()
+          new   BrokerBoot(system).start()
         }
       }
       for (role <- nodeConsoleList) {
         runOn(role) {
           enterBarrier("startup")
-          ConsoleBoot(system).start()
+          new ConsoleBoot(system).start()
         }
       }
     }
@@ -110,3 +98,16 @@ abstract class NodesTest
   }
 
 }
+
+
+class NodesTestMultiJvmNode1 extends NodesTest
+
+class NodesTestMultiJvmNode2 extends NodesTest
+
+class NodesTestMultiJvmNode3 extends NodesTest
+
+class NodesTestMultiJvmNode4 extends NodesTest
+
+class NodesTestMultiJvmNode5 extends NodesTest
+
+class NodesTestMultiJvmNode6 extends NodesTest

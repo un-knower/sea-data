@@ -17,7 +17,7 @@
   日志、数据库操作、消息通知……），以及业务阶段（如文件采集等）。
 - @ref[《Borker Leader-协调模块》](../broker/leader/leader.md)：加载业务（数据）处理流程文件，生成任务并对任务进行调度，对调度资源和
   策略进行管理。
-- @ref[《业务编排系统模块》](../console/choreography/choreography.md)：生成业务（数据）处理流程文件。
+- @ref[《业务编排系统模块》](../console/orchestration/orchestration.md)：生成业务（数据）处理流程文件。
 - @ref[《监、管子系统》](../console/console/console.md)：对系统运行状况、任务执行情况进行监查，并可管理系统。
 - @ref[《业务文件规范》](../spec/business_spec/business_spec.md)：业务编排子系统定义的配置文件格式。
 - @ref[《组件规范》](../spec/component_spec/component_spec.md)：采集组件实现规范，SPI。

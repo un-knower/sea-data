@@ -4,15 +4,14 @@
  * This is the custom License of Yangbajing
  */
 
-package seadata.broker
+package seadata.broker.boot
 
 import seadata.core.server.SeaBoot
-import seadata.broker.boot.BrokerBoot
 
 object Main {
 
   def main(args: Array[String]): Unit = {
-    BrokerBoot(SeaBoot.actorSystem).start()
+    new BrokerBoot(SeaBoot.actorSystem).start()
   }
 
 }

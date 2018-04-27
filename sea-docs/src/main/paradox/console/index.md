@@ -5,6 +5,6 @@
 @@@ index
 
 * [console/console](console/console.md)
-* [choreography/choreography](choreography/choreography.md)
+* [orchestration/orchestration](orchestration/orchestration.md)
 
 @@@

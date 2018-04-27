@@ -6,8 +6,6 @@
 
 package helloscala.common.data;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
 
 /**
@@ -18,7 +16,6 @@ public class ApiResult implements IApiResult<Object> {
     private Integer errCode = 0;
     private String errMsg = null;
 
-    @ApiModelProperty(dataType = "object")
     private Object data = null;
 
     public ApiResult() {

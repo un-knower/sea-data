@@ -4,7 +4,7 @@
  * This is the custom License of Yangbajing
  */
 
-package seadata.choreography.web.api
+package seadata.orchestration.web.api
 
 class Routes {
 

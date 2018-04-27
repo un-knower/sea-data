@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import helloscala.common.ErrCodes;
 import helloscala.common.data.IApiResult;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Exception 基类
@@ -24,7 +23,6 @@ public class HSException extends RuntimeException implements IApiResult<Object> 
      */
     private Integer errCode;
 
-    @ApiModelProperty(dataType = "object")
     private Object data;
 
     @JsonIgnore

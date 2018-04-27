@@ -4,7 +4,7 @@
  * This is the custom License of Yangbajing
  */
 
-package seadata.broker.coordinator
+package seadata.broker.leader
 
 import akka.actor.Props
 import akka.cluster.Cluster

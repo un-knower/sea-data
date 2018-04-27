@@ -11,7 +11,7 @@ import akka.cluster.singleton.{ClusterSingletonProxy, ClusterSingletonProxySetti
 import com.typesafe.scalalogging.StrictLogging
 import seadata.core.Constants
 
-abstract class BaseBoot extends StrictLogging {
+trait BaseBoot extends StrictLogging {
   val system: ActorSystem
 
   private[this] var _brokerLeaderProxy: ActorRef = _

@@ -59,7 +59,7 @@ lazy val seaConsole = _project("sea-console")
   .settings(Packaging.settings: _*)
   .settings(Publishing.noPublish: _*)
   .settings(
-    mainClass in Compile := Some("seadata.console.Main"),
+    mainClass in Compile := Some("seadata.console.boot.Main"),
     libraryDependencies ++= Seq(
 
     )
@@ -74,7 +74,7 @@ lazy val seaBroker = _project("sea-broker")
   .settings(Packaging.settings: _*)
   .settings(Publishing.noPublish: _*)
   .settings(
-    mainClass in Compile := Some("seadata.broker.Main"),
+    mainClass in Compile := Some("seadata.broker.boot.Main"),
     libraryDependencies ++= Seq(
       _quartz,
       _alpakkaFile,
@@ -114,15 +114,16 @@ lazy val seaCore = _project("sea-core")
     libraryDependencies ++= Seq(
       _protobuf,
       _shapeless,
+      _postgresql,
       _akkaHttpCore % Provided
-    ) ++ _catses
+    ) ++ _catses ++ _circes ++ _slicks
   )
 
 lazy val seaCommon = _project("sea-common")
   .settings(Publishing.publishing: _*)
   .settings(
     libraryDependencies ++= Seq(
-      _swaggerAnnotation % Provided,
+//      _swaggerAnnotation % Provided,
       _hikariCP,
       _scalaLogging,
       _logbackClassic,

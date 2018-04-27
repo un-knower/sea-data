@@ -7,12 +7,11 @@
 package helloscala.common.jdbc
 
 import java.sql.{Connection, PreparedStatement}
-import javax.sql.DataSource
 
 import akka.stream.stage.{GraphStageLogic, GraphStageWithMaterializedValue, InHandler}
 import akka.stream.{Attributes, Inlet, SinkShape}
+import javax.sql.DataSource
 
-import scala.collection.immutable
 import scala.concurrent.{Future, Promise}
 import scala.util.control.NonFatal
 

@@ -7,11 +7,9 @@
 
 Sea引擎分3大部分：
 
-1. engine：执行引擎，接收引擎Leader指派的业务任务（job-task）并解析 task。根据 task 解析后的每个任务步骤（task-step），
+1. engine：执行引擎，接收Broker Leader指派的业务任务（job-task）并解析 task。根据 task 解析后的每个任务步骤（task-step），
    调用相应数据组件进行处理。
 2. component repository：保存所有的数据组件，引擎将自动同步组件仓库里的组件到每一个节点。
-3. leader：Sea集群将自动选择一个节点作为 Leader，Leader 将负责调度所有数据业务（job）。解析每个业务的业务定义文件获取每
-   个业务的任务依赖关系。并根据各Broker节点的负载情况来分配任务。
 
 ## engine（engine-worker）
 

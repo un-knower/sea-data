@@ -1,7 +1,7 @@
 import sbt._
 
 object Dependencies {
-  val versionScala = "2.12.4"
+  val versionScala = "2.12.5"
   val versionScalaLib = "2.12"
 
   val _scalaXml = ("org.scala-lang.modules" %% "scala-xml" % "1.1.0").exclude("org.scala-lang", "scala-library")
@@ -10,7 +10,7 @@ object Dependencies {
 
   val _scalatest = "org.scalatest" %% "scalatest" % "3.0.5"
 
-  val versionAkka = "2.5.11"
+  val versionAkka = "2.5.12"
   lazy val _akkaRemote = "com.typesafe.akka" %% "akka-remote" % versionAkka
 
   lazy val _akkas = Seq(
@@ -34,7 +34,7 @@ object Dependencies {
 
   lazy val _akkaManagement = "com.lightbend.akka.management" %% "akka-management" % "0.10.0"
 
-  val versionAkkaHttp = "10.1.0"
+  val versionAkkaHttp = "10.1.1"
   val _akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % versionAkkaHttp
 
   val _akkaHttps = Seq(
@@ -44,7 +44,7 @@ object Dependencies {
     .exclude("com.typesafe.akka", "akka-stream").withCrossVersion(CrossVersion.binary)
     .exclude("com.typesafe.akka", "akka-stream-testkit").withCrossVersion(CrossVersion.binary))
 
-  private val versionAlpakka = "0.17"
+  private val versionAlpakka = "0.18"
   val _alpakkaSimpleCodecs = ("com.lightbend.akka" %% "akka-stream-alpakka-simple-codecs" % versionAlpakka)
     .excludeAll(ExclusionRule("com.typesafe.akka"))
 
@@ -81,20 +81,20 @@ object Dependencies {
     _alpakkaFtp
   )
 
-  private val versionAkkaPersistenceCassandra = "0.82"
+  private val versionAkkaPersistenceCassandra = "0.83"
   val _akkaPersistenceCassandras = Seq(
     "com.typesafe.akka" %% "akka-persistence-cassandra" % versionAkkaPersistenceCassandra,
     "com.typesafe.akka" %% "akka-persistence-cassandra-launcher" % versionAkkaPersistenceCassandra % Test
   )
 
-  val _akkaStreamKafka = ("com.typesafe.akka" %% "akka-stream-kafka" % "0.19")
+  val _akkaStreamKafka = ("com.typesafe.akka" %% "akka-stream-kafka" % "0.20")
     .exclude("com.typesafe.akka", "akka-slf4j").cross(CrossVersion.binary)
 
   val _config = "com.typesafe" % "config" % "1.3.3"
 
-  val _hanlp = "com.hankcs" % "hanlp" % "portable-1.5.3"
+  val _hanlp = "com.hankcs" % "hanlp" % "portable-1.6.3"
 
-  private val versionJackson = "2.9.4"
+  private val versionJackson = "2.9.5"
   val _jacksons = Seq(
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % versionJackson,
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % versionJackson,
@@ -102,9 +102,9 @@ object Dependencies {
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % versionJackson
   )
 
-  val _aspectjweaver = "org.aspectj" % "aspectjweaver" % "1.8.13"
+  val _aspectjweaver = "org.aspectj" % "aspectjweaver" % "1.9.1"
 
-  val _sigarLoader = "io.kamon" % "sigar-loader" % "1.6.6-rev002"
+  val _sigarLoader = "io.kamon" % "sigar-loader" % "1.6.6" //-rev002"
 
   private val versionKamon = "1.0.1"
   val _kamonAkka = ("io.kamon" %% "kamon-akka-2.5" % versionKamon)
@@ -118,7 +118,7 @@ object Dependencies {
     .exclude("org.scala-lang", "scala-library")
 
   // need aspectjweaver
-  val _kamonAkkaRemote = ("io.kamon" %% "kamon-akka-remote-2.5" % "1.0.0")
+  val _kamonAkkaRemote = ("io.kamon" %% "kamon-akka-remote-2.5" % versionKamon)
     .excludeAll(ExclusionRule("com.typesafe.akka")).cross(CrossVersion.binary)
     .exclude("org.scala-lang", "scala-library")
 
@@ -134,17 +134,32 @@ object Dependencies {
     _aspectjweaver // kamon-akka-remote 需要
   )
 
-  private val versioCats = "1.0.1"
+  private val versionCats = "1.0.1"
   val _catses = Seq(
-    "org.typelevel" %% "cats-macros" %versioCats,
-    "org.typelevel" %% "cats-free" %versioCats
-  )
+    "org.typelevel" %% "cats-macros",
+    "org.typelevel" %% "cats-free"
+  ).map(_ % versionCats)
+
+  private val versionCirce = "0.9.3"
+  val _circes = Seq(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser",
+    "io.circe" %% "circe-java8"
+  ).map(_ % versionCirce)
 
   val _shapeless = "com.chuusai" %% "shapeless" % "2.3.3"
 
-  val _scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.8.0"
+  val _scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0"
 
-  private val versionCassandra = "3.3.2"
+  val _slicks = Seq(
+    "com.typesafe.slick" %% "slick-hikaricp" % "3.2.3",
+    "com.typesafe.slick" %% "slick-testkit" % "3.2.3" % Test,
+    "com.github.tminglei" %% "slick-pg" % "0.16.1",
+    "com.github.tminglei" %% "slick-pg_circe-json" % "0.16.1"
+  )
+
+  private val versionCassandra = "3.5.0"
   val _cassandraDrivers = Seq(
     "com.datastax.cassandra" % "cassandra-driver-core" % versionCassandra,
     "com.datastax.cassandra" % "cassandra-driver-extras" % versionCassandra
@@ -155,15 +170,14 @@ object Dependencies {
   private val versionQuartz = "2.2.3"
   val _quartz = "org.quartz-scheduler" % "quartz" % versionQuartz
 
-  val _postgresql = "org.postgresql" % "postgresql" % "42.2.1"
+  val _postgresql = "org.postgresql" % "postgresql" % "42.2.2"
 
   val _mysql = "mysql" % "mysql-connector-java" % "6.0.6"
 
-  val _hikariCP = "com.zaxxer" % "HikariCP" % "2.7.8"
+  val _hikariCP = "com.zaxxer" % "HikariCP" % "3.1.0"
 
   val _protobuf = "com.google.protobuf" % "protobuf-java" % "3.5.1"
 
-  private val swaggerVersion = "1.5.18"
-  val _swaggerAnnotation = "io.swagger" % "swagger-annotations" % swaggerVersion
+  val _swaggerAnnotation = "io.swagger.core.v3" % "swagger-annotations" % "2.0.1"
 }
 
